@@ -11,7 +11,6 @@ import Clarifai from 'clarifai';
 const app = new Clarifai.App({
   apiKey: '7a4027fc12d2444097d3ff07dfdd6cae'
 });
-
 class App extends Component {
   constructor() {
     super();
@@ -31,12 +30,11 @@ class App extends Component {
           <Logo />
           <Rank />
         </div>
-        <ImageLinkForm onInputChange={this.onInputChange} onSubmit={this.onSubmit} />
+        <ImageLinkForm onInputChange={this.onInputChange} onSubmit={this.onSubmit} onEnter={this.onEnter} />
         <FaceRecognition imageUrl={this.state.imageUrl} faceData={this.state.faceData} />
       </div>
     );
   }
-}
 
   calculateFaceLoctions = (data) => {
     const faceRegions = data.outputs[0].data.regions;
@@ -60,8 +58,18 @@ class App extends Component {
     this.setState({ faceData: faceData });
   }
 
+  onEnter = (event) => {
+    if (event.keyCode === 13) {
+      if (event.target.value.length > 0) {
+        this.onSubmit(event)
+      } else {
+        console.log('please enter a valid image url');
+      }
+    }
+  }
+
   onInputChange = (event) => {
-    this.setState({ input: event.target.value })
+    this.setState({ input: event.target.value });
   }
 
   onSubmit = (event) => {
@@ -75,8 +83,10 @@ class App extends Component {
         this.setFaceData(this.calculateFaceLoctions(response));
       }).catch((err) => {
         console.log(err);
+        console.log('please enter a valid image url');
       }));
   }
+}
 
 const particleParams = {
   "particles": {

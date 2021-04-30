@@ -7,7 +7,7 @@ const FaceRecognition = ({ imageUrl, faceData }) => {
     return (
         <div className='ma pic-display'>
             <div className='absolute mt2'>
-                <img id='inputimage' alt='' src={imageUrl} width='500px' height='auto' />
+                <img id='inputimage' alt='' src={imageUrl} width='500px' height='auto'/>
                 {identifyAllFaces}
             </div>
         </div>
