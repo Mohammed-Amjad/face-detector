@@ -4,6 +4,12 @@
   justify-content: center;
 }
 
+.logorank {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-evenly;
+}
+
 .particles {
   position: fixed;
   top: 0;

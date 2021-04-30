@@ -8,20 +8,20 @@ import Particles from 'react-particles-js';
 
 const particleParams = {
   "particles": {
-      "number": {
-          "value": 150
-      },
-      "size": {
-          "value": 2
-      }
+    "number": {
+      "value": 50
+    },
+    "size": {
+      "value": 2
+    }
   },
   "interactivity": {
-      "events": {
-          "onhover": {
-              "enable": true,
-              "mode": "repulse"
-          }
+    "events": {
+      "onhover": {
+        "enable": true,
+        "mode": "repulse"
       }
+    }
   }
 };
 
@@ -30,8 +30,10 @@ function App() {
     <div>
       <Particles className='particles' params={particleParams} />
       <Navigation />
-      <Logo />
-      <Rank />
+      <div className='logorank'>
+        <Logo />
+        <Rank />
+      </div>
       <ImageLinkForm />
       <FaceRecognition />
     </div>
