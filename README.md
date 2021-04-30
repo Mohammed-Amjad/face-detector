@@ -68,3 +68,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### Live Demo
+
+Open  https://mohammed-amjad.github.io/face-detector/
+Enter any image's URL (example: https://analyticsindiamag.com/wp-content/uploads/2020/03/aim_face.jpg) in the text box and click Detect.
+
+
