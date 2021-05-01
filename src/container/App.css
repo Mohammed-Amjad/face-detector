@@ -5,10 +5,12 @@
   text-align: center;
 }
 
-.logorank {
+.logo-nav {
+  margin-left: 1rem;
+  margin-top: 1rem;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-between;
 }
 
 .particles {

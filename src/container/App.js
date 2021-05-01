@@ -4,6 +4,8 @@ import Logo from '../component/logo/Logo'
 import ImageLinkForm from '../component/imagelinkform/ImageLinkForm'
 import Rank from '../component/rank/Rank'
 import FaceRecognition from '../component/facerecognition/FaceRecognition'
+import SignIn from '../component/signin/SignIn';
+import Register from '../component/register/Register';
 import Particles from 'react-particles-js';
 import React, { Component } from 'react';
 import Clarifai from 'clarifai';
@@ -17,7 +19,9 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl: '',
-      faceData: []
+      faceData: [],
+      route: 'signin',
+      isSignedIn: false
     }
   }
 
@@ -25,15 +29,31 @@ class App extends Component {
     return (
       <div>
         <Particles className='particles' params={particleParams} />
-        <Navigation />
-        <div className='logorank'>
+        <div className='logo-nav'>
           <Logo />
-          <Rank />
+          <Navigation onRouteChange={this.onRouteChange} isSignedIn={this.state.isSignedIn} />
         </div>
-        <ImageLinkForm onInputChange={this.onInputChange} onSubmit={this.onSubmit} onEnter={this.onEnter} />
-        <FaceRecognition imageUrl={this.state.imageUrl} faceData={this.state.faceData} />
+        { (this.state.route === 'home') ?
+          <div>
+            <Rank />
+            <ImageLinkForm onInputChange={this.onInputChange} onSubmit={this.onSubmit} onEnter={this.onEnter} />
+            <FaceRecognition imageUrl={this.state.imageUrl} faceData={this.state.faceData} />
+          </div>
+          : (this.state.route === 'signin' ?
+            <SignIn onRouteChange={this.onRouteChange} />
+            : <Register onRouteChange={this.onRouteChange} />)
+        }
       </div>
     );
+  }
+
+  onRouteChange = (route) => {
+    if (route === 'home') {
+      this.setState({isSignedIn : true});
+    } else {
+      this.setState({isSignedIn: false});
+    }
+    this.setState({ route: route });
   }
 
   calculateFaceLoctions = (data) => {
