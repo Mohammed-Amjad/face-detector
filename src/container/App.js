@@ -1,3 +1,6 @@
+/**
+ * backend server: https://face-detection-api-v1.herokuapp.com
+ */
 import './App.css';
 import Navigation from '../component/navigation/Navigation'
 import Logo from '../component/logo/Logo'
@@ -8,21 +11,11 @@ import SignIn from '../component/signin/SignIn';
 import Register from '../component/register/Register';
 import Particles from 'react-particles-js';
 import React, { Component } from 'react';
-import Clarifai from 'clarifai';
-
-const app = new Clarifai.App({
-  apiKey: '7a4027fc12d2444097d3ff07dfdd6cae'
-});
+import { serverUrl } from '../constants/AppConstants';
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      input: '',
-      imageUrl: '',
-      faceData: [],
-      route: 'signin',
-      isSignedIn: false
-    }
+    this.state = initialState;
   }
 
   render() {
@@ -35,23 +28,29 @@ class App extends Component {
         </div>
         { (this.state.route === 'home') ?
           <div>
-            <Rank />
+            <Rank name={this.state.user.name} count={this.state.user.entries} />
             <ImageLinkForm onInputChange={this.onInputChange} onSubmit={this.onSubmit} onEnter={this.onEnter} />
             <FaceRecognition imageUrl={this.state.imageUrl} faceData={this.state.faceData} />
           </div>
           : (this.state.route === 'signin' ?
-            <SignIn onRouteChange={this.onRouteChange} />
-            : <Register onRouteChange={this.onRouteChange} />)
+            <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser} />
+            : <Register onRouteChange={this.onRouteChange} loadUser={this.loadUser} />)
         }
       </div>
     );
   }
 
+  loadUser = (data) => {
+    this.setState({ user: data });
+  }
+
   onRouteChange = (route) => {
     if (route === 'home') {
-      this.setState({isSignedIn : true});
+      this.setState({
+        isSignedIn: true
+      });
     } else {
-      this.setState({isSignedIn: false});
+      this.setState(initialState);
     }
     this.setState({ route: route });
   }
@@ -94,17 +93,31 @@ class App extends Component {
 
   onSubmit = (event) => {
     console.log(this.state.input);
-    this.setState({ imageUrl: this.state.input }, () => app.models
-      .predict(
-        Clarifai.FACE_DETECT_MODEL,
-        this.state.imageUrl
-      )
-      .then((response) => {
-        this.setFaceData(this.calculateFaceLoctions(response));
-      }).catch((err) => {
-        console.log(err);
-        console.log('please enter a valid image url');
-      }));
+    this.setState({ imageUrl: this.state.input }, () => {
+
+      fetch(`${serverUrl}/use`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: this.state.user.id,
+          imageUrl: this.state.imageUrl
+        })
+      })
+        .then(res => res.json())
+        .then(response => {
+          if (response.responseCode === '04') {
+            this.setFaceData(this.calculateFaceLoctions(response.data.apiResponse));
+            this.setState({
+              user: Object.assign(this.state.user, { entries: response.data.entries })
+            })
+          } else {
+            console.log('Did not receieved proper response from server');
+          }
+        })
+        .catch(err => console.log('server unavailable while incremeneting usage count', err))
+    });
   }
 }
 
@@ -126,5 +139,20 @@ const particleParams = {
     }
   }
 };
+
+const initialState = {
+  input: '',
+  imageUrl: '',
+  faceData: [],
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  }
+}
 
 export default App;
