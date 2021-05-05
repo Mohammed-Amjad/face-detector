@@ -29,6 +29,14 @@ class Register extends React.Component {
 
     onSubmit = () => {
 
+        if (!this.state.password || !this.state.email || !this.state.name) {
+            this.setState({
+                signInFailed: true,
+                responseMessage: 'enter name, email and password',
+            });
+            return;
+        }
+
         // Encrypt
         var ciphertext = CryptoJS.AES.encrypt(this.state.password, secret).toString();
         fetch(`${serverUrl}/register`,

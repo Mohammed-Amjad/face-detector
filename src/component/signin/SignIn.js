@@ -23,6 +23,14 @@ class SignIn extends React.Component {
 
     onSubmit = () => {
 
+        if (!this.state.password || !this.state.email) {
+            this.setState({
+                signInFailed: true,
+                responseMessage: 'enter email and password',
+            });
+            return;
+        }
+
         // Encrypt
         var ciphertext = CryptoJS.AES.encrypt(this.state.password, secret).toString();
 
